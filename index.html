@@ -6010,16 +6010,17 @@ updateViewBox();
 
 <script>
   function sendHeightToParent() {
-    const height = document.documentElement.scrollHeight || document.body.scrollHeight;
-    parent.postMessage({ type: "resize", height: height }, "*");
+    const height = document.body.scrollHeight;
+    parent.postMessage({ type: "resize", height }, "*");
   }
 
   window.addEventListener("load", sendHeightToParent);
   window.addEventListener("resize", sendHeightToParent);
-  setInterval(sendHeightToParent, 500); // optional: reduce to 300ms for more responsiveness
+  setInterval(sendHeightToParent, 300); // Keeps adjusting on interaction
 </script>
 
 </body>
+
 
 
 
