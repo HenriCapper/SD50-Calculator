@@ -6010,16 +6010,24 @@ updateViewBox();
 
 <script>
   function sendHeight() {
-    const height = document.documentElement.scrollHeight;
+    const buffer = 80; // adjust this number for more breathing room
+    const height = document.documentElement.scrollHeight + buffer;
     parent.postMessage({ height: height }, "*");
   }
 
+  // Only send height when layout changes
   window.addEventListener("load", sendHeight);
   window.addEventListener("resize", sendHeight);
-  setInterval(sendHeight, 300);
+
+  // Optional: trigger after UI changes (like button clicks)
+  document.addEventListener("click", function () {
+    setTimeout(sendHeight, 250);
+  });
 </script>
 
+
 </body>
+
 
 
 
