@@ -6008,7 +6008,19 @@ updateViewBox();
 
   </script>
 
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    parent.postMessage({ height: height }, "*");
+  }
+
+  window.addEventListener("load", sendHeight);
+  window.addEventListener("resize", sendHeight);
+  setInterval(sendHeight, 300);
+</script>
+
 </body>
+
 
 
 
