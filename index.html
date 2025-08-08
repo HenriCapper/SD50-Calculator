@@ -6008,17 +6008,17 @@ updateViewBox();
 
   </script>
 
-<style>
-  body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background: transparent;
-    margin: 0;
-    padding: 0;
+<script>
+  function sendHeightToParent() {
+    const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+    parent.postMessage({ type: "resize", height: height }, "*");
   }
 
-  .top-header {
-    display: none !important; /* optional: remove logo/header from embedded calculator */
-  }
-</style>
+  window.addEventListener("load", sendHeightToParent);
+  window.addEventListener("resize", sendHeightToParent);
+  setInterval(sendHeightToParent, 500); // optional: reduce to 300ms for more responsiveness
+</script>
+
 </body>
+
 
