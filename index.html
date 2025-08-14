@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <body>
 
 
@@ -28,7 +30,7 @@
       --radius: 12px;
     }
     * { box-sizing:border-box }
-    html,body { margin:0;padding:0 0 80px 0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--text) }
+    html,body { margin:0;padding:0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--text) }
     h1 { 
       font: 700 2.2rem/1.2 'Inter', system-ui, Arial, sans-serif;
       text-align: center;
@@ -165,6 +167,20 @@
     #viewBtn  { background:#0d6efd } #viewBtn:hover  { background:#0b5ed7 }
     #pdfBtn   { background:#0077c8 } #pdfBtn:hover   { background:#0062a8 }
     #view3dBtn { background:#28a745 } #view3dBtn:hover { background:#1e7e34 }
+    /* Glass Order PDF button styling matches other primary action buttons */
+    #orderPdfBtn {
+      background: #0077c8;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      padding: 10px 20px;
+      cursor: pointer;
+      flex: 1;
+    }
+    #orderPdfBtn:hover {
+      background: #0062a8;
+    }
     .flexBtns { display:flex;gap:.8rem;margin-top:1rem }
     .results-table,.order-table { width:100%;border-collapse:collapse;margin-top:1rem }
     .results-table th,.results-table td,
@@ -374,27 +390,25 @@ body > *:not(.container) img[src*="opus"] {
     
     /* Gate Control Button Styles - Black Design */
     .liveGateLeft, .liveGateRight, .liveGateFlip {
-      background: #2c3e50 !important;
-      border: 1px solid #34495e !important;
-      border-radius: 6px !important;
+      /* Unified gate control button styling (compact) */
+      background: #000 !important;
+      border: 1px solid #333 !important;
+      border-radius: 4px !important;
       color: #ffffff !important;
       cursor: pointer !important;
       font-weight: 500 !important;
-      font-size: 1.1rem !important;
-      padding: 0.6rem !important;
-      transition: all 0.25s ease !important;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-      text-align: center !important;
-      white-space: nowrap !important;
+      font-size: 0.85rem !important;
+      padding: 0.4rem 0.5rem !important;
+      transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease !important;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
       display: inline-flex !important;
       align-items: center !important;
-      justify-content: center !important;
-      width: 45px !important;
-      height: 45px !important;
-      min-width: 45px !important;
-      min-height: 45px !important;
-      min-height: 32px !important;
-      max-width: 160px !important;
+      justify-content: flex-start !important;
+      gap: 0.6rem !important;
+      min-height: 36px !important;
+      width: auto !important;
+      min-width: 0 !important;
+      white-space: nowrap !important;
     }
     
     .liveGateLeft:hover, .liveGateRight:hover, .liveGateFlip:hover {
@@ -426,10 +440,26 @@ body > *:not(.container) img[src*="opus"] {
       border-color: #95a5a6 !important;
     }
     
-    /* Arrow and icon styling */
-    .liveGateLeft span, .liveGateRight span, .liveGateFlip span {
-      display: inline-block;
-      font-size: 0.85rem;
+    /* Icon and label styling for gate control buttons */
+    .liveGateLeft .icon, .liveGateRight .icon, .liveGateFlip .icon {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 20px !important;
+      height: 20px !important;
+      line-height: 20px !important;
+      border-radius: 50% !important;
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-size: 0.75rem !important;
+      font-weight: 600 !important;
+      flex-shrink: 0 !important;
+    }
+    .liveGateLeft .label, .liveGateRight .label, .liveGateFlip .label {
+      color: #ffffff !important;
+      font-size: 0.75rem !important;
+      font-weight: 500 !important;
+      white-space: nowrap !important;
     }
   </style>
 
@@ -631,6 +661,7 @@ body > *:not(.container) img[src*="opus"] {
         <button id="emailBtn">Email Order List</button>
         <div class="flexBtns">
           <button id="pdfBtn">Download Plan (PDF)</button>
+          <button id="orderPdfBtn">Download Glass Order (PDF)</button>
           <button id="view3dBtn">View 3D Plan</button>
         </div>
       </div>
@@ -2821,23 +2852,16 @@ function refreshSelectors() {
         const gateControlsDiv = document.createElement('div');
         gateControlsDiv.style.cssText = 'margin-top:8px; padding:12px; background:linear-gradient(135deg, #f8fbff 0%, #e8f4ff 100%); border-radius:10px; border:1px solid #c5e1ff; box-shadow:0 2px 10px rgba(0,119,200,0.12);';
         gateControlsDiv.innerHTML = `
-          <div style="display:flex; align-items:center; justify-content:center; gap:0.75rem; flex-wrap:wrap;">
-            <span style="font-size:0.9rem; color:#0066cc; font-weight:600; display:flex; align-items:center; gap:0.3rem;">
-              🚪 Position:
-            </span>
-            <button type="button" class="liveGateLeft" data-side="${i}" onclick="moveGate(${i}, 'left')" ${currentPanelIndex <= 0 ? 'disabled' : ''} title="Move Gate Left">
-              ⬅
-            </button>
-            <span class="liveGatePositionDisplay" data-side="${i}" style="font-size:0.8rem; color:#0066cc; text-align:center; font-weight:600; padding:0.3rem 0.6rem; background:#fff; border-radius:6px; border:1px solid #d4e6ff; box-shadow:0 1px 3px rgba(0,119,200,0.1);">Hinge: Panel ${currentPanelIndex}, Gate: Panel ${currentPanelIndex + 1}</span>
-            <button type="button" class="liveGateRight" data-side="${i}" onclick="moveGate(${i}, 'right')" ${currentPanelIndex >= totalPanels - 2 ? 'disabled' : ''} title="Move Gate Right">
-              ➡
-            </button>
-            <span style="font-size:0.9rem; color:#0066cc; font-weight:600; display:flex; align-items:center; gap:0.3rem; margin-left:1rem;">
-              🔄 Orientation:
-            </span>
-            <button type="button" class="liveGateFlip" data-side="${i}" onclick="flipGate(${i})" title="Flip Gate Orientation">
-              🔄
-            </button>
+          <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-start;">
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              <span style="font-size:0.9rem; color:#0066cc; font-weight:600; display:flex; align-items:center; gap:0.3rem;">🚪 Position:</span>
+              <span class="liveGatePositionDisplay" data-side="${i}" style="font-size:0.8rem; color:#0066cc; text-align:center; font-weight:600; padding:0.3rem 0.6rem; background:#fff; border-radius:6px; border:1px solid #d4e6ff; box-shadow:0 1px 3px rgba(0,119,200,0.1);">Hinge: Panel ${currentPanelIndex}, Gate: Panel ${currentPanelIndex + 1}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:nowrap; overflow-x:auto; width:100%; justify-content:flex-start;">
+              <button type="button" class="liveGateFlip" data-side="${i}" onclick="flipGate(${i})" title="Flip Hinge-Gate Orientation"><span class="icon">🔄</span><span class="label">Flip Hinge-Gate Orientation</span></button>
+              <button type="button" class="liveGateLeft" data-side="${i}" onclick="moveGate(${i}, 'left')" ${currentPanelIndex <= 0 ? 'disabled' : ''} title="Move Hinge-Gate Left"><span class="icon">←</span><span class="label">Move Hinge-Gate Left</span></button>
+              <button type="button" class="liveGateRight" data-side="${i}" onclick="moveGate(${i}, 'right')" ${currentPanelIndex >= totalPanels - 2 ? 'disabled' : ''} title="Move Hinge-Gate Right"><span class="icon">→</span><span class="label">Move Hinge-Gate Right</span></button>
+            </div>
           </div>
         `;
         wrap.appendChild(gateControlsDiv);
@@ -4226,14 +4250,7 @@ document.getElementById('view3dBtn').onclick = () => {
     }
 
     // Prepare 3D view data with correct fence geometry
-    const view3dData = {
-      runs: layouts, // layouts contain the panel data for each side
-      pts: pts,      // fence corner points
-      sideLens: sideLens,
-      curShape: curShape,
-      handrailType: $('handrailType').value,
-      finishType: $('finishType').value
-    };
+    const sideCount = pts.length - 1;const runsAligned = [];for (let i = 0; i < sideCount; i++) {  const L = layouts[i];  if (L && Array.isArray(L.panelWidths)) { runsAligned.push(L); }  else {    const segLen = Math.hypot(pts[i+1][0]-pts[i][0], pts[i+1][1]-pts[i][1]);    runsAligned.push({ panelWidths: [], gap: 0, run: segLen, missing: true });  }}const fence = $('fenceType').value;const pool = fence === 'pool';const thk = $('glassThk').value;const ht = $('glassHt').value;const zone = $('windZone').value;let __maxSpacing = 400;if (pool) { __maxSpacing = 400; }else if (PS1 && PS1.balustrade && PS1.balustrade.internal[thk] && PS1.balustrade.internal[thk][ht]) {__maxSpacing = PS1.balustrade.internal[thk][ht][zone] || 400;}const __limit4 = $('limit4Discs') ? $('limit4Discs').checked : false;const __maxDiscsPerPanel = __limit4 ? 4 : Infinity;const __edgeMax = 200;const view3dData = { runs: runsAligned, pts: pts, sideLens: sideLens, curShape: curShape, handrailType: $('handrailType').value, finishType: $('finishType').value, maxSpacing: __maxSpacing, edgeMax: __edgeMax, maxDiscsPerPanel: __maxDiscsPerPanel, pool: pool, thk: thk, ht: ht, zone: zone };
 
     // Create the 3D view HTML
     const html3d = generate3DViewHTML(view3dData);
@@ -4266,12 +4283,12 @@ function generate3DViewHTML(data) {
   html += 'const scene = new THREE.Scene();';
   html += 'scene.background = new THREE.Color(0xf0f0f0);';
   html += 'const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);';
-  html += 'const renderer = new THREE.WebGLRenderer({ antialias: true });';
+  html += 'const renderer = new THREE.WebGLRenderer({ antialias: true });renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));';
   html += 'renderer.setSize(window.innerWidth, window.innerHeight);';
-  html += 'document.body.appendChild(renderer.domElement);';
+  html += 'document.body.appendChild(renderer.domElement);function onWindowResize(){camera.aspect = window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth, window.innerHeight);}window.addEventListener("resize", onWindowResize);';
   html += 'const controls = new THREE.OrbitControls(camera, renderer.domElement);';
   html += 'camera.position.set(5, 4, 5);';
-  html += 'controls.target.set(0, 0, 0);';
+  html += 'controls.target.set(0, 0, 0);controls.enableDamping = true;controls.dampingFactor = 0.08;controls.minDistance = 1.5;controls.maxDistance = 50;controls.maxPolarAngle = Math.PI * 0.49;controls.minPolarAngle = Math.PI * 0.05;';
   html += 'const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);';
   html += 'scene.add(ambientLight);';
   
@@ -4332,7 +4349,7 @@ function generate3DViewHTML(data) {
   html += 'const dy = endPt[1] - startPt[1];';
   html += 'const scale = 0.002;';
   html += 'let currentPos = 0;';
-  html += 'if (!layout.panelWidths) { console.warn("No panelWidths for side", sideIndex); return; }';
+  html += 'if (!layout.panelWidths || !layout.panelWidths.length) { /* side has no solution, skip drawing panels but keep index */ return; }';
   html += 'let gatePanelIndex = null;';
   html += 'if (layout.gateSegment) {';
   html += 'if (layout.gateSegment.panelIndex !== undefined) {';
@@ -4364,15 +4381,16 @@ function generate3DViewHTML(data) {
   html += 'panel.rotation.y = -angle;';
   html += 'scene.add(panel);';
   
-  // Add disc visualization for this panel with safe defaults
-  html += 'const maxSpacing = 400;'; // Safe default
-  html += 'const edgeMax = 200;'; // Safe default
+  // Add disc visualization based on actual solver parameters
+  html += 'const maxSpacing = (layoutData.maxSpacing || 400);';
+  html += 'const edgeMax = (layoutData.edgeMax || 200);';
   html += 'let discCount = Math.max(2, Math.ceil((panelWidth - 2 * edgeMax) / maxSpacing) + 1);';
-  html += 'if (discCount > 6) discCount = 6;'; // Reasonable limit
+  html += 'const maxPerPanel = (layoutData.maxDiscsPerPanel || Infinity);';
+  html += 'if (discCount > maxPerPanel) discCount = maxPerPanel;';
   html += 'const discSpacing = (panelWidth - 2 * edgeMax) / Math.max(1, discCount - 1);';
   html += 'const discGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.02, 16);'; // 100mm diameter, 20mm thick - much bigger!
   html += 'const discMaterial = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.8, roughness: 0.2 });';
-  html += 'for (let d = 0; d < discCount; d++) {';
+  html += 'console.log("3D: panel", panelWidth, "positions", discCount, "rendered discs", discCount*2);';html += 'for (let d = 0; d < discCount; d++) {';
   html += 'const discOffset = edgeMax + d * discSpacing;';
   html += 'const discProgress = (currentPos + discOffset * scale) / (sideLength * scale);';
   html += 'const discX = startPt[0] * scale + dx * scale * discProgress;';
@@ -4492,20 +4510,7 @@ function generate3DViewHTML(data) {
   html += 'const sideLength = Math.sqrt(dx * dx + dy * dy);';
   html += 'const midX = (startPt[0] + endPt[0]) / 2 * scale;';
   html += 'const midZ = (startPt[1] + endPt[1]) / 2 * scale;';
-  html += 'const runLengthText = Math.round(sideLength) + "mm";';
-  html += 'const textGeometry = new THREE.TextGeometry(runLengthText, {';
-  html += 'font: font,';
-  html += 'size: 0.15,';
-  html += 'height: 0.02,';
-  html += 'curveSegments: 12,';
-  html += 'bevelEnabled: true,';
-  html += 'bevelThickness: 0.005,';
-  html += 'bevelSize: 0.002,';
-  html += 'bevelSegments: 3';
-  html += '});';
-  html += 'textGeometry.computeBoundingBox();';
-  html += 'const centerOffset = -0.5 * (textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x);';
-  html += 'const textMaterial = new THREE.MeshPhongMaterial({ ';
+  html += 'const runLengthText = Math.round(sideLength) + "mm";';html += 'const textGeometry = new THREE.TextGeometry(runLengthText, {';html += 'font: font,';html += 'size: 0.15,';html += 'height: 0.02,';html += 'curveSegments: 12,';html += 'bevelEnabled: true,';html += 'bevelThickness: 0.005,';html += 'bevelSize: 0.002,';html += 'bevelSegments: 3';html += '});';html += 'textGeometry.computeBoundingBox();';html += 'if (textGeometry.center) { textGeometry.center(); } else { const bb2=textGeometry.boundingBox; const xMid2=(bb2.max.x+bb2.min.x)/2; textGeometry.translate(-xMid2,0,0); }';html += 'const textMaterial = new THREE.MeshPhongMaterial({ ';
   html += 'color: 0x000000,';
   html += 'shininess: 30,';
   html += 'specular: 0x444444';
@@ -4514,7 +4519,6 @@ function generate3DViewHTML(data) {
   html += 'const textBBox = textGeometry.boundingBox;';
   html += 'const textWidth = textBBox.max.x - textBBox.min.x;';
   html += 'const textHeight = textBBox.max.y - textBBox.min.y;';
-  html += 'textMesh.position.x += centerOffset;';
   html += 'textMesh.position.set(midX, 2.6, midZ);';
   html += 'const angle = Math.atan2(dy, dx);';
   html += 'textMesh.rotation.y = -angle + Math.PI;';
@@ -4550,19 +4554,7 @@ function generate3DViewHTML(data) {
   html += 'const progress = (currentPos + panelLength / 2) / (sideLength * scale);';
   html += 'const panelMidX = startPt[0] * scale + dx * scale * progress;';
   html += 'const panelMidZ = startPt[1] * scale + dy * scale * progress;';
-  html += 'const panelText = panelWidth + "mm";';
-  html += 'const panelTextGeometry = new THREE.TextGeometry(panelText, {';
-  html += 'font: font, size: 0.15, height: 0.02';
-  html += '});';
-  html += 'const panelTextMaterial = new THREE.MeshBasicMaterial({ color: 0x0066cc });';
-  html += 'const panelTextMesh = new THREE.Mesh(panelTextGeometry, panelTextMaterial);';
-  html += 'panelTextGeometry.computeBoundingBox();';
-  html += 'const panelTextWidth = panelTextGeometry.boundingBox.max.x - panelTextGeometry.boundingBox.min.x;';
-  html += 'const normalX = Math.sin(-angle);';
-  html += 'const normalZ = Math.cos(-angle);';
-  html += 'panelTextMesh.position.set(panelMidX - panelTextWidth/2 - normalX * 0.5, 1.5, panelMidZ - normalZ * 0.5);';
-  html += 'panelTextMesh.rotation.y = -angle + Math.PI;';
-  html += 'scene.add(panelTextMesh);';
+  html += 'const panelText = panelWidth + "mm";';html += 'const panelTextGeometry = new THREE.TextGeometry(panelText, {';html += 'font: font, size: 0.15, height: 0.02';html += '});';html += 'const panelTextMaterial = new THREE.MeshBasicMaterial({ color: 0x0066cc });';html += 'const panelTextMesh = new THREE.Mesh(panelTextGeometry, panelTextMaterial);';html += 'panelTextGeometry.computeBoundingBox();';html += 'if (panelTextGeometry.center) { panelTextGeometry.center(); } else { const bb=panelTextGeometry.boundingBox; const xMid=(bb.max.x+bb.min.x)/2; panelTextGeometry.translate(-xMid,0,0); }';html += 'const normalX = Math.sin(-angle);';html += 'const normalZ = Math.cos(-angle);';html += 'panelTextMesh.position.set(panelMidX - normalX * 0.5, 1.5, panelMidZ - normalZ * 0.5);';html += 'panelTextMesh.rotation.y = -angle + Math.PI;';html += 'scene.add(panelTextMesh);';
   html += 'currentPos += panelLength;';
   html += 'if (layout.gateSegment && panelIndex === gatePanelIndex && panelIndex < layout.panelWidths.length - 1) {';
   html += 'let gateCurrentPos = currentPos;';
@@ -4745,7 +4737,7 @@ function generate3DViewHTML(data) {
   html += 'scene.add(rail);';
   html += 'currentPos += panelLength;';
   html += 'if (layout.gateSegment && panelIndex === layout.gateSegment.panelIndex) {';
-  html += 'currentPos += layout.gateSegment.width * scale;';
+  html += 'const __gateW = ((layout.gateSegment && (layout.gateSegment.totalWidth || layout.gateSegment.width)) ? (layout.gateSegment.totalWidth || layout.gateSegment.width) : 905) * scale; currentPos += __gateW;';
   html += '} else if (panelIndex < layout.panelWidths.length - 1) {';
   html += 'currentPos += (layout.gap || 8) * scale;';
   html += '}';
@@ -6006,24 +5998,158 @@ saveDrawingState();
 // Initialize the viewBox for zoom functionality
 updateViewBox();
 
-  </script>
+  // --- Glass Order PDF Generation (SD50) ---
+  // A tiny 1x1 transparent PNG used as the logo in the glass order PDF.
+  // We use a small placeholder here to keep the HTML file size reasonable; the PDF footer will still show a subtle logo block.
+  const OPUS_LOGO_SMALL =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
 
-<script>
-  function sendHeight() {
-    const buffer = 80; // adjust this number for more breathing room
-    const height = document.documentElement.scrollHeight + buffer;
-    parent.postMessage({ height: height }, "*");
+  const orderPdfBtn = document.getElementById('orderPdfBtn');
+  if (orderPdfBtn) {
+    orderPdfBtn.onclick = async () => {
+      // Ensure calculation has been run
+      if (!Array.isArray(layouts) || layouts.length === 0) {
+        alert('Please calculate first');
+        return;
+      }
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      // Determine glass note from thickness selection
+      const glassThkEl = document.getElementById('glassThk');
+      const glassThkVal = glassThkEl && glassThkEl.value ? glassThkEl.value : '';
+      let glassTypeName = '';
+      if (glassThkVal === '13.52' || glassThkVal === '17.52') {
+        glassTypeName = 'Sentry Laminate';
+      } else if (glassThkVal) {
+        glassTypeName = 'Toughened';
+      }
+      const glassNote = glassThkVal ? `${glassThkVal}mm ${glassTypeName}` : '';
+
+      // Compute order height (FFL + 50mm)
+      // Retrieve glass height element safely without using optional chaining for older browser compatibility
+      const htEl = document.getElementById('glassHt');
+      const fflStr = (htEl && htEl.value) ? htEl.value : '0';
+      const fflHeight = parseInt(fflStr, 10) || 0;
+      const glassHeightOrder = fflHeight + 50;
+
+      // Build map of unique panel/gate widths
+      const uniqueMap = {};
+      layouts.forEach((lay) => {
+        if (Array.isArray(lay.panelWidths)) {
+          lay.panelWidths.forEach((pw) => {
+            const key = `panel_${pw}`;
+            if (uniqueMap[key]) uniqueMap[key].count++;
+            else uniqueMap[key] = { width: pw, type: 'panel', count: 1 };
+          });
+        }
+        if (lay.gateSegment) {
+          const gWidth = lay.gateSegment.totalWidth || lay.gateSegment.width || 905;
+          const key = `gate_${gWidth}`;
+          if (uniqueMap[key]) uniqueMap[key].count++;
+          else uniqueMap[key] = { width: gWidth, type: 'gate', count: 1 };
+        }
+      });
+      const uniquePanels = Object.values(uniqueMap);
+      uniquePanels.sort((a, b) => b.width - a.width);
+
+      // Helper to draw header and info box on each page
+      function drawHeaderAndInfo() {
+        const barW = pageWidth - 120;
+        const barH = 40;
+        const barX = (pageWidth - barW) / 2;
+        const barY = 0;
+        const barR = 20;
+        pdf.setFillColor(0, 0, 0);
+        pdf.roundedRect(barX, barY, barW, barH, barR, barR, 'F');
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(20);
+        pdf.text('Opus Hardware – SD50 Glass Order', pageWidth / 2, barY + 27, { align: 'center' });
+        pdf.setTextColor(17, 17, 17);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(12);
+        const infoX = 40;
+        const infoY = barY + barH + 20;
+        const infoW = pageWidth - 80;
+        const infoH = 70;
+        pdf.setDrawColor(234, 234, 234);
+        pdf.setFillColor(255, 255, 255);
+        pdf.roundedRect(infoX, infoY, infoW, infoH, 8, 8, 'FD');
+        const shapeLabel = curShape && curShape.label ? curShape.label : 'Unknown';
+        const totalRun = sideLens.reduce((a, b) => a + b, 0);
+        pdf.text(`Shape: ${shapeLabel}`, infoX + 20, infoY + 20);
+        pdf.text(`Total Run: ${totalRun} mm`, infoX + 20, infoY + 36);
+        if (glassNote) {
+          pdf.text(`Glass: ${glassNote}`, infoX + 20, infoY + 52);
+        }
+        return infoY + infoH + 20;
+      }
+
+      let currentY = drawHeaderAndInfo();
+      const rectW = 300;
+      const rectH = 80;
+      const rowGap = 40;
+
+      uniquePanels.forEach((panel) => {
+        if (currentY + rectH > pageHeight - 80) {
+          pdf.addPage();
+          currentY = drawHeaderAndInfo();
+        }
+        const rectX = 60;
+        const rectY = currentY;
+        if (panel.type === 'gate') {
+          pdf.setFillColor(198, 231, 198);
+        } else {
+          pdf.setFillColor(200, 220, 255);
+        }
+        pdf.setDrawColor(160, 160, 160);
+        pdf.rect(rectX, rectY, rectW, rectH, 'FD');
+        const arrowY = rectY - 12;
+        const arrowSize = 6;
+        pdf.setDrawColor(0, 0, 0);
+        pdf.setLineWidth(1);
+        pdf.line(rectX, arrowY, rectX + rectW, arrowY);
+        pdf.line(rectX, arrowY, rectX + arrowSize, arrowY - arrowSize / 2);
+        pdf.line(rectX, arrowY, rectX + arrowSize, arrowY + arrowSize / 2);
+        pdf.line(rectX + rectW, arrowY, rectX + rectW - arrowSize, arrowY - arrowSize / 2);
+        pdf.line(rectX + rectW, arrowY, rectX + rectW - arrowSize, arrowY + arrowSize / 2);
+        const widthLabel = panel.type === 'gate' ? 890 : panel.width;
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setTextColor(20, 20, 20);
+        pdf.text(`${widthLabel}mm`, rectX + rectW / 2, arrowY - 3, { align: 'center' });
+        if (panel.type === 'gate') {
+          pdf.setFontSize(14);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(60, 60, 60);
+          pdf.text('Gate Panel', rectX + rectW / 2, rectY + rectH / 2 + 4, { align: 'center' });
+        }
+        if (panel.count > 0) {
+          const qtyX = rectX + rectW + 10;
+          const qtyY = rectY + rectH / 2 + 5;
+          pdf.setFontSize(22);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(255, 0, 0);
+          pdf.text(`x${panel.count}`, qtyX, qtyY);
+        }
+        currentY += rectH + rowGap;
+      });
+      // Footer
+      const footY = pageHeight - 50;
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(100, 100, 100);
+      pdf.text('Generated by Opus Hardware SD50 Designer', 40, footY);
+      const imgSize = 80;
+      pdf.addImage(OPUS_LOGO_SMALL, 'PNG', pageWidth - imgSize - 40, footY - imgSize + 20, imgSize, imgSize);
+      pdf.save('Opus_SD50_GlassOrder.pdf');
+    };
   }
 
-  // Only send height when layout changes
-  window.addEventListener("load", sendHeight);
-  window.addEventListener("resize", sendHeight);
-
-  // Optional: trigger after UI changes (like button clicks)
-  document.addEventListener("click", function () {
-    setTimeout(sendHeight, 250);
-  });
-</script>
+  </script>
 
 
 </body>
